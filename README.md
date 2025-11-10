@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Front End React
 
-## Getting Started
+Start with a log in box that allows a user to log in.
 
-First, run the development server:
+Depending on the user type they will see a different home screen.
+The home screen will be a list of data. The user may or may not see buttons, depending on their assigned role.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Same info as back end repo:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Front End
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Built in React, New Repo.
+We will have the log in box for email and password.
+This will be sent to the back end to check.
+When use is authenticated, we check what they have access to.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+If they are 'admin' role
+They can see all branches.
 
-## Learn More
+If they are 'manager' role they can only see their branch.
 
-To learn more about Next.js, take a look at the following resources:
+If they are 'worker' role they can only see their information.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Data set up
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+So we will need a table to save users and their roles.
+A table to save user and password
+A table to save store locations -> Branch A, Branch B
+A table to save Jobs -> Each job has a location and a 'worker' (user)
 
-## Deploy on Vercel
+So when an admin logs in, they can see all the data of all of the jobs and all the 'workers' assigned.
+They can click on a button which will take them to a 'new user sign up page' to add a new user.
+They can see a button that says 'assign job' and they can assign a job to any shop or staff member.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+When a 'manager' logs in, they can see all jobs assigned to their shop.
+They can see a button that says assign job -> But they can only see users allocated to their location.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+When a worker logs in, they can only see their jobs.
+
+# What we need to do is get the appropriate data for the user displaying on the home page.
+
+# Allow the userto click buttons, depending on their role, fill in data and send it back to the database.
+
+# We want to test the system works with unit tests and playright.
