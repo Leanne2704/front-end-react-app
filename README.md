@@ -5,6 +5,10 @@ Start with a log in box that allows a user to log in.
 Depending on the user type they will see a different home screen.
 The home screen will be a list of data. The user may or may not see buttons, depending on their assigned role.
 
+ADMIN -> sees add user, add job and log out.
+MANAGER -> SEES ADD JOB AND LOG OUT
+USER -> SEE'S LOG OUT.
+
 # Same info as back end repo:
 
 ### Front End
@@ -15,7 +19,7 @@ This will be sent to the back end to check.
 When use is authenticated, we check what they have access to.
 
 If they are 'admin' role
-They can see all branches.
+They can see all store branches.
 
 If they are 'manager' role they can only see their branch.
 
