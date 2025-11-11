@@ -52,10 +52,11 @@ global.fetch = jest.fn();
 
 describe("AddUserPage", () => {
   let pushMock: jest.Mock;
+  // declaring variable and asigning type.
   const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
 
   beforeEach(() => {
-    pushMock = jest.fn();
+    pushMock = jest.fn(); // actuaally giving the pushMock a value.
     (useRouter as jest.Mock).mockReturnValue({ push: pushMock });
     mockFetch.mockClear();
   });
@@ -135,7 +136,7 @@ describe("AddUserPage", () => {
     expect(emailInput.value).toBe("john@example.com");
   });
 
-  it("shows branch field for non-admin roles", async () => {
+  it("has a drop-down list for roles with all options", async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ user: { role: "admin" } }),
@@ -148,12 +149,14 @@ describe("AddUserPage", () => {
     });
 
     const roleSelect = screen.getByLabelText("Role") as HTMLSelectElement;
-    fireEvent.change(roleSelect, { target: { value: "manager" } });
-
-    expect(screen.getByLabelText("Branch")).toBeInTheDocument();
+    // Check that all role options are present
+    expect(roleSelect).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Admin" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Manager" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Worker" })).toBeInTheDocument();
   });
 
-  it("hides branch field for admin role", async () => {
+  it("has a drop-down list for branches", async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ user: { role: "admin" } }),
@@ -162,13 +165,17 @@ describe("AddUserPage", () => {
     render(<AddUserPage />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText("Role")).toBeInTheDocument();
+      expect(screen.getByLabelText("Branch")).toBeInTheDocument();
     });
 
-    const roleSelect = screen.getByLabelText("Role") as HTMLSelectElement;
-    fireEvent.change(roleSelect, { target: { value: "admin" } });
-
-    expect(screen.queryByLabelText("Branch")).not.toBeInTheDocument();
+    // Branch drop-down should appear for non-admin roles
+    const branchSelect = screen.getByLabelText("Branch") as HTMLSelectElement;
+    expect(branchSelect).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "London" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("option", { name: "Manchester" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Cardiff" })).toBeInTheDocument();
   });
 
   it("shows validation error when required fields are missing", async () => {
@@ -191,7 +198,7 @@ describe("AddUserPage", () => {
     });
   });
 
-  it("shows validation error when branch is not selected for non-admin users", async () => {
+  it("shows validation error when branch is not selected", async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ user: { role: "admin" } }),

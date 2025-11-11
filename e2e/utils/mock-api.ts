@@ -50,8 +50,8 @@ export class MockApiHelper {
             role: role,
             email: TEST_USERS[role as keyof typeof TEST_USERS].email,
             first_name: TEST_USERS[role as keyof typeof TEST_USERS].firstName,
-            surname: TEST_USERS[role as keyof typeof TEST_USERS].surname
-          }
+            surname: TEST_USERS[role as keyof typeof TEST_USERS].surname,
+          },
         }),
       });
     });
@@ -91,15 +91,15 @@ export class MockApiHelper {
       await route.fulfill({
         status: 201,
         contentType: "application/json",
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           message: "User created successfully",
           user: {
             id: 2,
             email: "john.doe@example.com",
             role: "manager",
             firstName: "John",
-            surname: "Doe"
-          }
+            surname: "Doe",
+          },
         }),
       });
     });

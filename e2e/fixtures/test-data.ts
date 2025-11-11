@@ -56,15 +56,15 @@ export const API_RESPONSES = {
       email: "john.doe@example.com",
       role: "manager",
       firstName: "John",
-      surname: "Doe"
-    }
+      surname: "Doe",
+    },
   },
 
   createUserFailure: {
-    error: "Email already exists"
+    error: "Email already exists",
   },
 
   networkError: {
-    error: "Network error occurred"
-  }
+    error: "Network error occurred",
+  },
 };

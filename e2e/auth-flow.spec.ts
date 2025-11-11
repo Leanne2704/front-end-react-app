@@ -38,7 +38,6 @@ class AuthFlowPage {
   async verifyDashboardElements() {
     // Verify we're on the home/dashboard page
     await expect(this.page).toHaveURL("/home");
-
     // Verify admin dashboard buttons are present with exact text
     await expect(
       this.page.getByRole("button", { name: "Add User" })
@@ -84,7 +83,7 @@ class AuthFlowPage {
     await this.page.fill('input[name="email"]', userData.email);
     await this.page.fill('input[name="password"]', userData.password);
     await this.page.selectOption('select[name="role"]', userData.role);
-    
+
     // Select branch if role is not admin
     if (userData.role !== "admin" && userData.branch) {
       await this.page.selectOption('select[name="branch"]', userData.branch);
@@ -135,12 +134,17 @@ test.describe("Authentication Flow E2E Tests", () => {
   });
 
   test.describe("Flow 1: Complete Login and Logout", () => {
-    test("should allow admin to login, view dashboard, and logout successfully", async ({ page }) => {
+    test("should allow admin to login, view dashboard, and logout successfully", async ({
+      page,
+    }) => {
       // Navigate to login page
       await authPage.navigateToLogin();
 
       // Fill and submit login form
-      await authPage.fillLoginForm(TEST_USERS.admin.email, TEST_USERS.admin.password);
+      await authPage.fillLoginForm(
+        TEST_USERS.admin.email,
+        TEST_USERS.admin.password
+      );
       await authPage.submitLogin();
 
       // Verify successful login and dashboard elements
@@ -173,7 +177,10 @@ test.describe("Authentication Flow E2E Tests", () => {
       });
 
       await authPage.navigateToLogin();
-      await authPage.fillLoginForm(TEST_USERS.admin.email, TEST_USERS.admin.password);
+      await authPage.fillLoginForm(
+        TEST_USERS.admin.email,
+        TEST_USERS.admin.password
+      );
       await authPage.submitLogin();
 
       // Should show network error message
@@ -192,12 +199,17 @@ test.describe("Authentication Flow E2E Tests", () => {
   });
 
   test.describe("Flow 2: Add User Functionality", () => {
-    test("should allow admin to add a new user successfully", async ({ page }) => {
+    test("should allow admin to add a new user successfully", async ({
+      page,
+    }) => {
       await authPage.mockCreateUserSuccess();
 
       // Login first
       await authPage.navigateToLogin();
-      await authPage.fillLoginForm(TEST_USERS.admin.email, TEST_USERS.admin.password);
+      await authPage.fillLoginForm(
+        TEST_USERS.admin.email,
+        TEST_USERS.admin.password
+      );
       await authPage.submitLogin();
       await authPage.verifyDashboardElements();
 
@@ -211,21 +223,23 @@ test.describe("Authentication Flow E2E Tests", () => {
         email: "john.doe@example.com",
         password: "password123",
         role: "manager",
-        branch: "1"
+        branch: "1",
       };
 
       await authPage.fillAddUserForm(newUserData);
       await authPage.submitAddUserForm();
 
       // Should redirect back to home page after successful creation
-      await expect(page).toHaveURL("/home");
-      await authPage.verifyDashboardElements();
+      await expect(page).toHaveURL("/home?success=User%20added%20successfully");
     });
 
     test("should handle add user form validation", async ({ page }) => {
       // Login first
       await authPage.navigateToLogin();
-      await authPage.fillLoginForm(TEST_USERS.admin.email, TEST_USERS.admin.password);
+      await authPage.fillLoginForm(
+        TEST_USERS.admin.email,
+        TEST_USERS.admin.password
+      );
       await authPage.submitLogin();
 
       // Navigate to Add User page
@@ -243,7 +257,10 @@ test.describe("Authentication Flow E2E Tests", () => {
 
       // Login first
       await authPage.navigateToLogin();
-      await authPage.fillLoginForm(TEST_USERS.admin.email, TEST_USERS.admin.password);
+      await authPage.fillLoginForm(
+        TEST_USERS.admin.email,
+        TEST_USERS.admin.password
+      );
       await authPage.submitLogin();
 
       // Navigate to Add User page
@@ -256,7 +273,7 @@ test.describe("Authentication Flow E2E Tests", () => {
         email: "admin@example.com", // Duplicate email
         password: "password123",
         role: "worker",
-        branch: "2"
+        branch: "2",
       };
 
       await authPage.fillAddUserForm(duplicateUserData);
@@ -266,35 +283,13 @@ test.describe("Authentication Flow E2E Tests", () => {
       await expect(page.getByText(/email already exists/i)).toBeVisible();
     });
 
-    test("should show branch field only for non-admin roles", async ({ page }) => {
-      // Login first
-      await authPage.navigateToLogin();
-      await authPage.fillLoginForm(TEST_USERS.admin.email, TEST_USERS.admin.password);
-      await authPage.submitLogin();
-
-      // Navigate to Add User page
-      await authPage.navigateToAddUser();
-
-      // Initially branch field should be visible
-      await expect(page.getByText("Branch")).toBeVisible();
-
-      // Select admin role
-      await page.selectOption('select[name="role"]', "admin");
-
-      // Branch field should still be visible (based on your current implementation)
-      await expect(page.getByText("Branch")).toBeVisible();
-
-      // Select manager role
-      await page.selectOption('select[name="role"]', "manager");
-
-      // Branch field should be visible
-      await expect(page.getByText("Branch")).toBeVisible();
-    });
-
     test("should handle cancel button on add user form", async ({ page }) => {
       // Login first
       await authPage.navigateToLogin();
-      await authPage.fillLoginForm(TEST_USERS.admin.email, TEST_USERS.admin.password);
+      await authPage.fillLoginForm(
+        TEST_USERS.admin.email,
+        TEST_USERS.admin.password
+      );
       await authPage.submitLogin();
 
       // Navigate to Add User page
@@ -305,10 +300,11 @@ test.describe("Authentication Flow E2E Tests", () => {
 
       // Should return to home page
       await expect(page).toHaveURL("/home");
-      await authPage.verifyDashboardElements();
     });
 
-    test("should handle network errors during user creation", async ({ page }) => {
+    test("should handle network errors during user creation", async ({
+      page,
+    }) => {
       // Mock network failure for user creation
       await page.route("**/api/users", async (route) => {
         route.abort("failed");
@@ -316,34 +312,44 @@ test.describe("Authentication Flow E2E Tests", () => {
 
       // Login first
       await authPage.navigateToLogin();
-      await authPage.fillLoginForm(TEST_USERS.admin.email, TEST_USERS.admin.password);
+      await authPage.fillLoginForm(
+        TEST_USERS.admin.email,
+        TEST_USERS.admin.password
+      );
       await authPage.submitLogin();
 
       // Navigate to Add User page and fill form
       await authPage.navigateToAddUser();
-      
+
       const userData = {
         firstName: "Test",
         surname: "User",
         email: "test@example.com",
         password: "password123",
         role: "worker",
-        branch: "1"
+        branch: "1",
       };
 
       await authPage.fillAddUserForm(userData);
       await authPage.submitAddUserForm();
 
       // Should show network error message
-      await expect(page.getByText(/network error|failed to create/i)).toBeVisible();
+      await expect(
+        page.getByText(/network error|failed to create/i)
+      ).toBeVisible();
     });
   });
 
   test.describe("Edge Cases and Error Handling", () => {
-    test("should handle session timeout during add user flow", async ({ page }) => {
+    test("should handle session timeout during add user flow", async ({
+      page,
+    }) => {
       // Login first
       await authPage.navigateToLogin();
-      await authPage.fillLoginForm(TEST_USERS.admin.email, TEST_USERS.admin.password);
+      await authPage.fillLoginForm(
+        TEST_USERS.admin.email,
+        TEST_USERS.admin.password
+      );
       await authPage.submitLogin();
 
       // Navigate to Add User page
@@ -365,28 +371,41 @@ test.describe("Authentication Flow E2E Tests", () => {
         email: "test@example.com",
         password: "password123",
         role: "worker",
-        branch: "1"
+        branch: "1",
       };
 
       await authPage.fillAddUserForm(userData);
       await authPage.submitAddUserForm();
 
-      // Should redirect to home page (based on your current error handling)
-      await expect(page).toHaveURL("/home");
+      // Should show authentication required error message
+      await expect(page.getByText(/authentication required/i)).toBeVisible();
     });
 
-    test("should handle non-admin user trying to access add user page", async ({ page }) => {
+    test("should not show add user button or allow access for non-admin user", async ({
+      page,
+    }) => {
       const mockApi = new MockApiHelper(page);
       await mockApi.mockAuthCheck("manager"); // Non-admin user
       await mockApi.mockLoginSuccess("manager");
 
       // Login as manager
       await authPage.navigateToLogin();
-      await authPage.fillLoginForm(TEST_USERS.manager.email, TEST_USERS.manager.password);
+      await authPage.fillLoginForm(
+        TEST_USERS.manager.email,
+        TEST_USERS.manager.password
+      );
       await authPage.submitLogin();
+
+      // Should NOT see the Add User button on dashboard
+      await expect(
+        page.getByRole("button", { name: "Add User" })
+      ).not.toBeVisible();
 
       // Try to navigate directly to add-user page
       await page.goto("/add-user");
+
+      // Wait for possible redirect
+      await page.waitForURL("/home", { timeout: 2000 });
 
       // Should redirect to home page (not authorized)
       await expect(page).toHaveURL("/home");

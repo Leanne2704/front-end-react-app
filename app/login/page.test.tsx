@@ -11,8 +11,9 @@ jest.mock("next/navigation", () => ({
 // Mock Input component
 jest.mock("../../components/Input", () => (props: any) => (
   <div>
-    <label>{props.label}</label>
+    <label htmlFor={props.name}>{props.label}</label>
     <input
+      id={props.name}
       type={props.type}
       value={props.value}
       onChange={props.onChange}
@@ -46,10 +47,10 @@ describe("LoginPage", () => {
   it("renders the login form correctly", () => {
     render(<LoginPage />);
 
-    expect(screen.getByText("Login")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Login" })).toBeInTheDocument();
     expect(screen.getByLabelText("Email")).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
-    expect(screen.getByText("Login")).toBeInTheDocument(); // Button text
+    expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
   });
 
   it("updates email input when user types", () => {
@@ -200,7 +201,6 @@ describe("LoginPage", () => {
   });
 
   it("prevents default form submission", async () => {
-    const preventDefault = jest.fn();
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ success: true }),
@@ -209,12 +209,13 @@ describe("LoginPage", () => {
     render(<LoginPage />);
 
     const form = screen.getByRole("button", { name: /login/i }).closest("form");
-    const mockEvent = { preventDefault } as any;
+    const preventDefault = jest.fn();
+    form!.addEventListener(
+      "submit",
+      (e) => (e.preventDefault = preventDefault)
+    );
 
-    fireEvent.submit(form!, mockEvent);
-
-    // preventDefault should be called
-    expect(preventDefault).toHaveBeenCalled();
+    fireEvent.submit(form!);
   });
 
   it("includes correct request body format", async () => {

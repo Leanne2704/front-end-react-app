@@ -4,7 +4,7 @@ export default {
   collectCoverage: true,
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov"],
-  testPathIgnorePatterns: ["/node_modules/", "/dist/"],
+  testPathIgnorePatterns: ["/node_modules/", "/dist/", "/e2e/"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx", "json", "node"],
   transform: {
     "^.+\\.(ts|tsx)$": "ts-jest",
